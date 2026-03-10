@@ -1,0 +1,26 @@
+.form_section {
+  background-color: aliceblue;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.form {
+  background-color: azure;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  width: 80%;
+  height: 50%;
+  border-radius: 10px;
+  padding: 10px 20px;
+}
+.heading {
+  font-size: 28px;
+}
+.input_div {
+  margin-bottom: 10px;
+}
+.submit_btn {
+  margin-top: 10px;
+}
