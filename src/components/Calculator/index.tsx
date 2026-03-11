@@ -2,8 +2,14 @@ import { useState } from "react";
 import Input from "../../ui/Input";
 import Button from "../../ui/Button";
 import styles from "./Calculator.module.css";
+import calculate from "../../utils/calculation";
+
+const STR_TO_ARR_SPLIT = /([+\-*/])/;
+
 const Calculator = () => {
   const [input, setInput] = useState("");
+  const [result, setResult] = useState<number | null>(null);
+  const [isError, setIsError] = useState(false);
   const HEADLING = "React Calculator";
 
   const calculator_value = [
@@ -28,29 +34,76 @@ const Calculator = () => {
     { label: "/", type: "operator" },
   ];
 
-  const handleChange = (e) => {
-    console.log(e.target.value);
+  const hancleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const val = e.currentTarget.value;
+
+    if (input == "" && val == "=") {
+      setIsError(true);
+    } else {
+      setIsError(false);
+      if (val == "=") {
+        const inputStr = input;
+        const convertStrToArr = inputStr
+          .split(STR_TO_ARR_SPLIT)
+          .filter(Boolean);
+        const cal = calculate(convertStrToArr);
+        setResult(cal);
+      } else if (val == "C") {
+        setInput("");
+        setResult(null);
+
+        setIsError(false);
+      } else {
+        handleCalculation(val);
+      }
+    }
+  };
+
+  const handleCalculation = (val: string) => {
+    // if last value is operator then remove it and add new operator
+    const updatedInput = input;
+    const lastValue = updatedInput.split(/([+\-*/])/).filter(Boolean);
+
+    if (
+      isOperator.includes(lastValue[lastValue.length - 1]) &&
+      isOperator.includes(val)
+    ) {
+      handleDuplicateOperator(val);
+    } else {
+      setInput((prev) => {
+        return prev + val;
+      });
+    }
+  };
+
+  const isOperator = ["+", "-", "*", "/"];
+
+  const handleDuplicateOperator = (val: string) => {
+    // remove last operator and insert new operator if user click operator multiple time at once
+    setInput((prev) => {
+      const tempInput = prev.split(STR_TO_ARR_SPLIT).filter(Boolean);
+      console.log(tempInput);
+      tempInput.pop();
+      tempInput.push(val);
+      return tempInput.join("");
+    });
   };
 
   return (
     <div className="parent">
       <h1 className="heading">{HEADLING}</h1>
       <Input
+        value={input}
         id="number"
-        type="number"
+        type="text"
         name="number"
-        onChange={(e) => console.log(e)}
+        readOnly={true}
       />
-      <p>Error</p>
+      <p>{isError ? "Error" : result || result == 0 ? result : ""}</p>
       <div className={styles.calculator_btn}>
         {calculator_value.map((item) => {
           return (
-            <Button
-              onClick={handleChange}
-              key={item.label}
-              value={item.label}
-              onChange={handleChange}
-            />
+            <Button onClick={hancleClick} key={item.label} value={item.label} />
           );
         })}
       </div>

@@ -1,7 +1,7 @@
 import "./button.css";
 type Props = {
   value: string | number;
-  onClick?: (value: string | number) => void;
+  onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
   key: string | number;
 };
 
@@ -10,7 +10,7 @@ const Button = ({ value, onClick, key }: Props) => {
     <button
       key={key}
       className={`button`}
-      onClick={(e) => console.log(e.target.value)}
+      onClick={(e) => onClick(e)}
       value={value}
     >
       {value}
